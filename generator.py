@@ -67,6 +67,7 @@ class ImageGenerator:
         # Handle wrapping around the data set for the batch
         if end_index > len(self.image_files):
             # Wrap around and create a new epoch
+            # Splitting the batch into two parts
             batch_files = self.image_files[start_index:] + self.image_files[:end_index - len(self.image_files)]
             batch_labels = self.image_labels[start_index:] + self.image_labels[:end_index - len(self.image_files)]
         else:
@@ -100,7 +101,6 @@ class ImageGenerator:
         return images, np.array(batch_labels)
 
     def augment(self, img):
-        # Apply random transformations (mirroring and/or rotation) to the image
         if self.mirroring and np.random.rand() < 0.5:
             img = np.fliplr(img)  # Mirror the image horizontally
 
