@@ -48,32 +48,34 @@ class ImageGenerator:
         self.image_files, self.image_labels = utils.shuffle(self.image_files, self.image_labels)
 
     def next(self):
+        # Check if we've reached the end of the dataset
+        if self.current_index >= len(self.image_files):
+            # Start a new epoch
+            self.current_epoch_count += 1
+
+            # Reset the index
+            self.current_index = 0
+
+            # Shuffle the data set if requested
+            if self.shuffle_data:
+                self.shuffle_data_set()
+
         # Determine the starting and ending index for the batch
         start_index = self.current_index
         end_index = start_index + self.batch_size
 
-        # Handle wrapping around the data set and starting a new epoch
+        # Handle wrapping around the data set for the batch
         if end_index > len(self.image_files):
             # Wrap around and create a new epoch
             batch_files = self.image_files[start_index:] + self.image_files[:end_index - len(self.image_files)]
             batch_labels = self.image_labels[start_index:] + self.image_labels[:end_index - len(self.image_files)]
-
-            # Increment the epoch counter
-            self.current_epoch_count += 1
-            print(self.current_epoch_count)
-
-            # Reset the current index and shuffle the data set if needed
-            self.current_index = end_index - len(self.image_files)
-
-            if self.shuffle_data:
-                self.shuffle_data_set()
         else:
             # Get the batch files and labels
             batch_files = self.image_files[start_index:end_index]
             batch_labels = self.image_labels[start_index:end_index]
 
-            # Update the current index
-            self.current_index = end_index
+        # Update the current index
+        self.current_index = end_index if end_index <= len(self.image_files) else end_index - len(self.image_files)
 
         # Load and process the images in the batch
         images = []

@@ -1,8 +1,6 @@
 from pattern import Checker, Circle, Spectrum
 from generator import ImageGenerator
 
-import numpy as np
-
 
 def main():
     checker = Checker(resolution=100, tile_size=10)

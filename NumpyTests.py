@@ -258,9 +258,17 @@ class TestGen(unittest.TestCase):
                              shuffle_data=True)
         b1_epoch0 = gen.next()[0]
         gen.next()
-        print(b1_epoch0)
         b1_epoch1 = gen.next()[0]
+
+        print("First epoch data order:")
+        print(b1_epoch0)
+
+        print("Second epoch data order:")
         print(b1_epoch1)
+
+        # Compare the data order between epochs directly
+        identical = np.array_equal(b1_epoch0, b1_epoch1)
+
         self.assertFalse(np.all(np.sort(b1_epoch0, axis=None) == np.sort(b1_epoch1, axis=None)),
                          msg="Possible error: The complete dataset is not shuffled after one epoch. Please make sure"
                              "to shuffle the whole dataset after one epoch (not only within the batches).")
